@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\datasimulator\datasimulator.csproj" />
+    <ProjectReference Include="..\notifier\notifier.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsRoot)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Azure IoT Edge Tools\AzureIoTEdgeProject.Build.targets" />
   <Import Project="$(MSBuildToolsRoot)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Azure IoT Edge Tools\AzureIoTEdgeProject.Build.props" />

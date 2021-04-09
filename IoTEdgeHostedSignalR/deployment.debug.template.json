@@ -70,6 +70,16 @@
               "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
               "createOptions": {}
             }
+          },
+          "notifier": {
+            "version": "1.0.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "${MODULEDIR<../notifier>.debug}",
+              "createOptions": {}
+            }
           }
         }
       }
@@ -79,7 +89,8 @@
         "schemaVersion": "1.0",
         "routes": {
           "datasimulatorToIoTHub": "FROM /messages/modules/datasimulator/outputs/* INTO $upstream",
-          "sensorTodatasimulator": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/datasimulator/inputs/input1\")"
+          "sensorTodatasimulator": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/datasimulator/inputs/input1\")",
+          "notifierToIoTHub": "FROM /messages/modules/notifier/outputs/* INTO $upstream"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
