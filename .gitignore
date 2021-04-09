@@ -2,6 +2,7 @@
 .env
 **/config/
 *.user
-/TelemetryClient/obj
-/TelemetryClient/bin/Debug/netcoreapp3.1
-/TelemetryClient/appsettings.development.json
+**/appsettings.development.json
+**/netcoreapp3.1
+**/obj
+
