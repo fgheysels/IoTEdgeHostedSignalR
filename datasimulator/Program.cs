@@ -1,11 +1,7 @@
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Client.Transport.Mqtt;
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +9,7 @@ namespace datasimulator
 {
     class Program
     {
-        static int counter;
+        private static readonly Random Randomizer = new Random();
 
         static async Task Main(string[] args)
         {
@@ -28,13 +24,22 @@ namespace datasimulator
             {
                 var msg = GenerateMessage();
 
-                
+                await moduleClient.SendEventAsync("data_output", msg, cts.Token);
 
-                await Task.Delay(500);
+                await Task.Delay(500, cts.Token);
             }
 
-
             await WhenCancelled(cts.Token);
+        }
+
+        private static Message GenerateMessage()
+        {
+            var temp = Randomizer.Next(-5, 15);
+
+            var json = $"{{\"temperature\": {temp} }}";
+
+            return new Message(System.Text.Encoding.ASCII.GetBytes(json));
+
         }
 
         /// <summary>
@@ -62,41 +67,6 @@ namespace datasimulator
             Console.WriteLine("IoT Hub module client initialized.");
 
             return ioTHubModuleClient;
-        }
-
-        /// <summary>
-        /// This method is called whenever the module is sent a message from the EdgeHub. 
-        /// It just pipe the messages without any change.
-        /// It prints all the incoming messages.
-        /// </summary>
-        static async Task<MessageResponse> PipeMessage(Message message, object userContext)
-        {
-            int counterValue = Interlocked.Increment(ref counter);
-
-            var moduleClient = userContext as ModuleClient;
-            if (moduleClient == null)
-            {
-                throw new InvalidOperationException("UserContext doesn't contain " + "expected values");
-            }
-
-            byte[] messageBytes = message.GetBytes();
-            string messageString = Encoding.UTF8.GetString(messageBytes);
-            Console.WriteLine($"Received message: {counterValue}, Body: [{messageString}]");
-
-            if (!string.IsNullOrEmpty(messageString))
-            {
-                using (var pipeMessage = new Message(messageBytes))
-                {
-                    foreach (var prop in message.Properties)
-                    {
-                        pipeMessage.Properties.Add(prop.Key, prop.Value);
-                    }
-                    await moduleClient.SendEventAsync("output1", pipeMessage);
-
-                    Console.WriteLine("Received message sent");
-                }
-            }
-            return MessageResponse.Completed;
         }
     }
 }
