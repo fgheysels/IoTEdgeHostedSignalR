@@ -1,13 +1,41 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using TelemetryClient.Settings;
 
 namespace TelemetryClient
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var configuration = GetConfiguration();
+
+            var connection = new HubConnectionBuilder()
+                           .WithUrl(configuration.TelemetryHubUrl)
+                           .WithAutomaticReconnect()
+                           .ConfigureLogging(logging =>
+                           {
+                               logging.AddConsole();
+                               logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Debug);
+                           })
+                           .Build();
+
+
+            connection.On<object>("BroadcastTelemetryUpdate", m =>
+            {
+                Console.WriteLine(m);
+            });
+
+            await connection.StartAsync();
+
+            Console.WriteLine("Connected to the Telemetry notification service! - Press any key to quit");
+            Console.WriteLine("Telemetry Updates that are send are displayed here:");
+
+            Console.ReadLine();
         }
 
         private static SignalRSettings GetConfiguration()

@@ -4,3 +4,4 @@
 *.user
 /TelemetryClient/obj
 /TelemetryClient/bin/Debug/netcoreapp3.1
+/TelemetryClient/appsettings.development.json
