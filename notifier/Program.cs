@@ -9,7 +9,6 @@ namespace notifier
 {
     class Program
     {
-
         static async Task Main(string[] args)
         {
             var host = CreateHostBuilder();
@@ -19,7 +18,10 @@ namespace notifier
         private static IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                       .ConfigureIoTEdgeModuleClient(TransportType.Mqtt_Tcp_Only)
+                       .ConfigureIoTEdgeModuleClient(TransportType.Mqtt_Tcp_Only, moduleClient =>
+                       {
+                           
+                       })
                        .ConfigureWebHostDefaults(webBuilder =>
                        {
                            webBuilder.ConfigureKestrel(kestrelServerOptions => kestrelServerOptions.AddServerHeader = false)
