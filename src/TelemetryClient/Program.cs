@@ -31,7 +31,7 @@ namespace TelemetryClient
 
             await connection.StartAsync();
 
-            await connection.SendAsync("SubscribeToDevice", "OddDevice");
+            await connection.SendAsync("SubscribeToDevice", "OddTemperatureGenerator");
 
             Console.WriteLine("Connected to the Telemetry notification service! - Press any key to quit");
             Console.WriteLine("Telemetry Updates that are send are displayed here:");

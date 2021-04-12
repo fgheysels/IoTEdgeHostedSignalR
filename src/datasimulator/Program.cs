@@ -36,10 +36,11 @@ namespace datasimulator
         {
             var temp = Randomizer.Next(-5, 15);
 
-            var json = $"{{\"temperature\": {temp} }}";
+            var deviceId = (temp % 2 == 0) ? "EvenTemperatureGenerator" : "OddTemperatureGenerator";
+
+            var json = $"{{ \"deviceId\": \"{deviceId}\", \"temperature\": {temp} }}";
 
             return new Message(System.Text.Encoding.ASCII.GetBytes(json));
-
         }
 
         /// <summary>
