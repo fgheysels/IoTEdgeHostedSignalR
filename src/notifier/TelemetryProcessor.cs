@@ -43,7 +43,11 @@ namespace notifier
 
                 var data = JsonConvert.DeserializeObject<DeviceTelemetry>(json);
 
-                _telemetryNotifier.Clients.All.BroadcastTelemetryUpdate(new[] { data });
+                data.DeviceId = (data.Temperature % 2 == 0) ? "EvenDevice" : "OddDevice";
+
+                // It's a bit silly to put the logic to which groups we need to send the messages here,
+                // since this has also been abstracted away by the Hub implementation.
+                _telemetryNotifier.Clients.Groups(data.DeviceId).BroadcastTelemetryUpdate(new[] {data});
 
                 _logger.LogInformation($"Broadcasted {json}");
 

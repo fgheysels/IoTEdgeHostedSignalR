@@ -24,13 +24,14 @@ namespace TelemetryClient
                            })
                            .Build();
 
-
             connection.On<object>("BroadcastTelemetryUpdate", m =>
             {
                 Console.WriteLine(m);
             });
 
             await connection.StartAsync();
+
+            await connection.SendAsync("SubscribeToDevice", "OddDevice");
 
             Console.WriteLine("Connected to the Telemetry notification service! - Press any key to quit");
             Console.WriteLine("Telemetry Updates that are send are displayed here:");
