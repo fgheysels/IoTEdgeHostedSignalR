@@ -23,20 +23,9 @@ namespace notifier
             Console.WriteLine($"Subscribed {Context.ConnectionId} to {deviceName}");
         }
 
-        public async Task BroadcastTelemetryUpdate(IEnumerable<DeviceTelemetry> metrics)
+        public Task BroadcastTelemetryUpdate(IEnumerable<DeviceTelemetry> metrics)
         {
-            var oddDeviceMetrics = metrics.Where(d => d.DeviceId == "OddDevice");
-            var evenDeviceMetrics = metrics.Where(d => d.DeviceId == "EvenDevice");
-
-            if (oddDeviceMetrics.Any())
-            {
-                await Clients.Groups("OddDevice").BroadcastTelemetryUpdate(oddDeviceMetrics);
-            }
-
-            if (evenDeviceMetrics.Any())
-            {
-                await Clients.Groups("EvenDevice").BroadcastTelemetryUpdate(evenDeviceMetrics);
-            }
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Devices.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using notifier.Models;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace notifier
 {
@@ -37,7 +34,7 @@ namespace notifier
         /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> that represents the long running operations.</returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _moduleClient.SetInputMessageHandlerAsync("telemetry_input", (m, s) =>
+            await _moduleClient.SetInputMessageHandlerAsync("telemetry_input", async (m, s) =>
             {
                 var json = Encoding.ASCII.GetString(m.GetBytes());
 
@@ -45,11 +42,11 @@ namespace notifier
 
                 // It's a bit silly to put the logic to which groups we need to send the messages here,
                 // since this has also been abstracted away by the Hub implementation.
-                _telemetryNotifier.Clients.Groups(data.DeviceId).BroadcastTelemetryUpdate(new[] { data });
+                await _telemetryNotifier.Clients.Groups(data.DeviceId).BroadcastTelemetryUpdate(new[] { data });
 
                 _logger.LogInformation($"Broadcasted {json}");
 
-                return Task.FromResult(MessageResponse.Completed);
+                return MessageResponse.Completed;
             }, null);
 
             while (!stoppingToken.IsCancellationRequested)
